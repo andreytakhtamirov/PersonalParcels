@@ -1,2 +1,5 @@
 
 CommandLineParser/message_1.json
+/venv/*
+.DS_Store
+*.json
