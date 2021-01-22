@@ -1,5 +1,6 @@
 import datetime
 import json
+import os
 
 from flask import Flask, render_template, request
 from werkzeug.utils import secure_filename
@@ -39,7 +40,10 @@ def read_file(filename):
             elif 'photos' in p:
                 for p in p['photos']:
                     messages_list.insert(0, 'url: ' + p['uri'])
-                    # print('creation timestamp: ' + convert_time(p['creation_timestamp']))
+                    # print('creation timestamp: ' + convert_time(p['creation_timestamp']))\
+
+    # delete file from server (the user's data should not be accessible for reading after processing)
+    os.remove(filename)
 
     return messages_list
 
