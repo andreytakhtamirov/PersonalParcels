@@ -16,10 +16,3 @@ You'll soon receive an email titled Your **Instagram Data** with a link to your 
 **Note**: It may take up to 48 hours for us to email you a download link. Some data you have deleted may be stored temporarily for safety and security purposes, but will not appear when you access or download your data.
 
 The above directions were taken from https://www.facebook.com/help/instagram/181231772500920?helpref=hc_fnav
-
-
-
-
-Our team: 
-* Faiza Haque
-* Andrey Takhtamirov
