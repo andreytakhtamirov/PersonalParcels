@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>website</title>
+</head>
+
+<body id="main_page" class="text-left" style="background: url('../static/assets/img/background.png');">
+    <form action = "http://127.0.0.1:5000/main" method = "POST">
+
+        <div class="col text-center" style="border-top-style: none;border-bottom-style: none;">
+            <h1 id="heading"
+                style="margin-top: 100px;padding: 0px;padding-bottom: 43px;border-bottom-color: rgb(191,93,251);color: rgb(189,149,255);">
+                hi
+            </h1>
+
+            <input id="password" name="password" class="shadow-sm" type="password"
+                style="text-align: center;padding-top: 0;border-style: none;border-color: rgb(179,98,98);border-top-style: solid;border-top-color: rgb(189,149,255);border-right-style: none;border-bottom-style: solid;border-bottom-color: rgb(189,149,255);"
+                placeholder="password">
+            <div class="clearfix" style="padding-bottom: 35px;"></div>
+            <button id="btn_submit" class="btn btn-primary" type="submit"
+                style="filter: blur(0px);background: rgb(189,149,255);padding-top: 3px;padding-bottom: 3px;color: rgb(255,255,255);">
+                submit
+            </button>
+
+            <p id="subheading"
+                style="margin-top: 30px;padding: 0px;padding-bottom: 43px; font-size: 20px; color: rgb(68, 29, 130);">
+                made with Bootstrap and jQuery.
+            </p>
+
+        </div>
+
+    </form>
+    <script type="text/javascript" src="{{ url_for('static', filename='assets/js/jquery.min.js') }}"></script>
+    <script type="text/javascript"
+        src="{{ url_for('static', filename='assets/bootstrap/js/bootstrap.min.js') }}"></script>
+
+    <script>
+        $(document).ready(function () {
+
+            $("#btn_submit").mouseenter(function () {
+                $("#heading, #password, #subheading").css("filter", "blur(3px)");
+            });
+
+            $("#btn_submit").mouseleave(function () {
+                $("#heading, #password, #subheading").css("filter", "blur(0px)");
+            });
+        });
+
+    </script>
+
+</body>
+
+</html>

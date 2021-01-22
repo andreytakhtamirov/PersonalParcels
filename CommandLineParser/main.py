@@ -3,7 +3,7 @@ import json
 
 
 def main():
-    with open("message_1.json") as json_file:
+    with open("message_23.json") as json_file:
         data = json.load(json_file)
 
         # print(data)
@@ -15,7 +15,7 @@ def main():
         for p in data['messages']:
             if 'content' in p and p['content'] != "":
                 print('sender: ' + p['sender_name'])
-                print('time: ' + convert_time(p['timestamp_ms'] / 1000))
+                print('time: ' + convert_time(p['timestamp_ms']))
                 print('content: ' + p['content'])
                 print('')
 
@@ -27,7 +27,7 @@ def main():
 
 
 def convert_time(ms_since_1970):
-    return datetime.datetime.fromtimestamp(ms_since_1970).strftime('%Y-%m-%d %H:%M')
+    return datetime.datetime.fromtimestamp(ms_since_1970 / 1000).strftime('%Y-%m-%d %H:%M')
 
 
 # Press the green button in the gutter to run the script.
