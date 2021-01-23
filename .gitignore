@@ -1,7 +1,7 @@
-/venv/*
 *.json
-/"Test Files"
-/FlaskPage/photos
+FlaskPage/photos
 FlaskPage/static/.DS_Store
 Screenshots/.DS_Store
 .DS_Store
+venv
+.idea/
