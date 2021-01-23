@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Messages</title>
+</head>
+
+<body style="margin-left:200px;">
+    <script type="text/javascript">
+        messages = {{ data | safe }};
+
+        displayMessages(messages);
+
+        function displayMessages(data) {
+            msg_string = "";
+            sender_string = "";
+            time_string = "";
+
+            for (item in data) {
+                if (Object.hasOwnProperty.call(data, item)) {
+                    element = data[item];
+
+                    if (element.includes("content: ")) {
+                        msg_string = element.substring("content: ".length);
+                    }
+                    else if (element.includes("sender: ")) {
+                        sender_string = element.substring("sender: ".length);
+                    }
+                    else if (element.includes("time: ")) {
+                        time_string = element.substring("time: ".length);
+                    }
+                    else if (element.includes("url: ")) {
+                        createImage(processUrl(element));
+                    }
+                }
+
+                if (msg_string.length != 0 && sender_string.length != 0 && time_string.length != 0) {
+                    createMessage(msg_string, sender_string, time_string);
+                    msg_string = "";
+                    sender_string = "";
+                    time_string = "";
+                }
+            }
+        }
+
+        function processUrl(urlElement) {
+            return urlElement.substring("url: ".length + 35, urlElement.length);
+        }
+
+        function createImage(imgPath) {
+            var img = document.createElement('img');
+            img.src = imgPath;
+            img.style.width = "300px";
+            document.body.appendChild(img);
+        }
+
+        function createMessage(message, sender, time) {
+            //this will be the container for the whole message: (message, sender, time)
+            var newMessage = document.createElement("div");
+
+            //create content child
+            newContent = document.createElement("div");
+            newContent.appendChild(document.createTextNode("message: " + message));
+            newMessage.appendChild(newContent);
+
+            //create sender child
+            newSender = document.createElement("div");
+            newSender.appendChild(document.createTextNode("sender: " + sender));
+            newMessage.appendChild(newSender);
+
+            //create time child
+            newTime = document.createElement("div");
+            newTime.appendChild(document.createTextNode("time: " + time));
+            newMessage.appendChild(newTime);
+
+            //set padding between whole messages
+            newMessage.style.paddingBottom = "40px";
+
+            //append whole message child to body
+            document.body.appendChild(newMessage);
+        }
+
+    </script>
+</body>
+
+</html>
