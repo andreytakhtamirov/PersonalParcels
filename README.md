@@ -1,7 +1,7 @@
 # PersonalParcels 💌
 
 ## This is a json parser to present old instagram threads in a pretty and organized way.
-We are ultimately planning to have a registered web domain with a flask backend where instagram message .json files can be uploaded and shown, of course, with no data being logged/saved on the server for privacy.
+I am ultimately planning to have a registered web domain with a flask backend where instagram message .json files can be uploaded and shown, of course, with no data being logged/saved on the server for privacy.
 
 Instagram messages are included in the "messages" directory of the file that must be requested from Facebook. 
 
