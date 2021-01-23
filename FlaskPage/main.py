@@ -22,7 +22,7 @@ def uploader():
 
 
 def read_file(filename):
-    messages_list = [""];
+    messages_list = [""]
 
     with open(filename) as json_file:
         data = json.load(json_file)
