@@ -6,7 +6,7 @@
     <title>Messages</title>
 </head>
 
-<body style="margin-left: 10%; margin-right: 10%; border-style: solid; display: compact; border-color: rgba(95,95,95, 0.2)">
+<body style="margin-left: 5%; margin-right: 5%; border-style: solid; display: compact; border-color: rgba(95,95,95, 0.2)">
 <script type="text/javascript">
     messages = {{ data | safe }}
 
@@ -57,7 +57,10 @@
         let img = document.createElement('img');
         img.src = imgPath;
         img.style.width = "300px";
+        img.onclick = function(){zoomImage(this)};
         img.style.paddingLeft = "5px";
+        img.style.paddingBottom = "5px";
+        img.style.display = "block";
         document.body.appendChild(img);
     }
 
@@ -122,6 +125,14 @@
 
         //append whole message child to body
         document.body.appendChild(newMessage);
+    }
+
+    function zoomImage(img) {
+        if ( img.style.width == "300px" ) {
+            img.style.width = "99%"
+        } else {
+            img.style.width = "300px"
+        }
     }
 
 </script>
