@@ -1,12 +1,16 @@
 import datetime
 import json
 import os
+from unidecode import unidecode
 
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect
 from werkzeug.utils import secure_filename
 
 app = Flask(__name__, static_url_path="/photos", static_folder="photos")
 
+@app.route('/')
+def home():
+    return redirect("/upload")
 
 @app.route('/upload')
 def upload_file():
@@ -27,7 +31,6 @@ def read_file(filename):
     with open(filename) as json_file:
         data = json.load(json_file)
 
-        # print(data)
         for p in data['participants']:
             messages_list.insert(0, 'participants: ' + p['name'])
 
