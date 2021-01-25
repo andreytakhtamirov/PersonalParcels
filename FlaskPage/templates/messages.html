@@ -100,17 +100,18 @@
         newMessage.style.fontSize = "18px";
         newMessage.style.display = "table";
         newMessage.style.maxWidth = "50%";
-        newMessage.style.alignContent = "right";
         newMessage.style.fontFamily = "arial";
 
         if (isMe == true) {
             newContent.style.backgroundColor = "rgba(140,95,245,0.2)";
             newTime.style.backgroundColor = "rgba(140,95,245,0.2)";
             newSender.style.display = "none";
-            newMessage.style.marginLeft = "70%";
+            newMessage.style.marginLeft = "auto";
             newMessage.style.paddingRight = "1%";
             newMessage.style.maxWidth = "400px";
 
+            newTime.style.textAlign = "left";
+            newContent.style.textAlign = "right";
             newTime.style.borderRadius = "0px 0px 1px 10px";
         }
 
