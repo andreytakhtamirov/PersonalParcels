@@ -2,11 +2,11 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
+    <meta http-equiv="content-type" content="text/html;charset=utf-8" />
     <title>Messages</title>
 </head>
 
-<body style="margin-left:200px;">
+<body style="margin-left: 10%; margin-right: 10%; border-style: solid; display: compact; border-color: rgba(95,95,95, 0.2)">
 <script type="text/javascript">
     messages = {{ data | safe }}
 
@@ -16,6 +16,7 @@
         let msg_string = "";
         let sender_string = "";
         let time_string = "";
+        let isMe = "";
 
         for (let item in data) {
             if (Object.hasOwnProperty.call(data, item)) {
@@ -23,8 +24,15 @@
 
                 if (element.includes("content: ")) {
                     msg_string = element.substring("content: ".length);
+                    msg_string = msg_string.replaceAll('â', '\'');
                 } else if (element.includes("sender: ")) {
                     sender_string = element.substring("sender: ".length);
+                    if (sender_string == "andrey.takhtamirov") {
+                        isMe = true;
+                    }
+                    else {
+                        isMe = false;
+                    }
                 } else if (element.includes("time: ")) {
                     time_string = element.substring("time: ".length);
                 } else if (element.includes("url: ")) {
@@ -33,7 +41,7 @@
             }
 
             if (msg_string.length !== 0 && sender_string.length !== 0 && time_string.length !== 0) {
-                createMessage(msg_string, sender_string, time_string);
+                createMessage(msg_string, sender_string, time_string, isMe);
                 msg_string = "";
                 sender_string = "";
                 time_string = "";
@@ -49,30 +57,67 @@
         let img = document.createElement('img');
         img.src = imgPath;
         img.style.width = "300px";
+        img.style.paddingLeft = "5px";
         document.body.appendChild(img);
     }
 
-    function createMessage(message, sender, time) {
+    function createMessage(message, sender, time, isMe) {
         //this will be the container for the whole message: (message, sender, time)
         let newMessage = document.createElement("div");
 
-        //create content child
-        let newContent = document.createElement("div");
-        newContent.appendChild(document.createTextNode("message: " + message));
-        newMessage.appendChild(newContent);
-
         //create sender child
         let newSender = document.createElement("div");
-        newSender.appendChild(document.createTextNode("sender: " + sender));
-        newMessage.appendChild(newSender);
+        newSender.appendChild(document.createTextNode(sender));
+
+        //create content child
+        let newContent = document.createElement("div");
+        newContent.style.backgroundColor = "rgba(83,201,236, 0.2)";
+        newContent.style.borderRadius = "10px 10px 0px 0px";
+        newContent.style.color = "rgb(86,86,86)";
+        newContent.style.paddingTop = "5px";
+        newContent.style.paddingLeft = "10px";
+        newContent.style.paddingRight = "10px";
+
+        newContent.appendChild(document.createTextNode(message));
 
         //create time child
         let newTime = document.createElement("div");
-        newTime.appendChild(document.createTextNode("time: " + time));
-        newMessage.appendChild(newTime);
+        newTime.style.color = "rgb(100,100,100)";
+        newTime.style.fontSize = "15px";
+        newTime.style.textAlign = "right";
+        newTime.style.backgroundColor = "rgba(83,201,236, 0.2)";
+        newTime.style.borderRadius = "0px 0px 10px 1px";
+        newTime.style.paddingTop = "5px";
+        newTime.style.paddingRight = "10px";
+        newTime.style.paddingLeft = "10px";
+        newTime.style.paddingBottom = "5px";
+        newTime.appendChild(document.createTextNode(time));
 
         //set padding between whole messages
-        newMessage.style.paddingBottom = "40px";
+        newMessage.style.paddingBottom = "4.5%";
+        newMessage.style.paddingLeft = "1%";
+        newMessage.style.paddingTop = "1%";
+        newMessage.style.fontSize = "18px";
+        newMessage.style.display = "table";
+        newMessage.style.maxWidth = "50%";
+        newMessage.style.alignContent = "right";
+        newMessage.style.fontFamily = "arial";
+
+        if (isMe == true) {
+            newContent.style.backgroundColor = "rgba(140,95,245,0.2)";
+            newTime.style.backgroundColor = "rgba(140,95,245,0.2)";
+            newSender.style.display = "none";
+            newMessage.style.marginLeft = "70%";
+            newMessage.style.paddingRight = "1%";
+            newMessage.style.maxWidth = "400px";
+
+            newTime.style.borderRadius = "0px 0px 1px 10px";
+        }
+
+        //append the elements of a message together: sender, content, time
+        newMessage.appendChild(newSender);
+        newMessage.appendChild(newContent);
+        newMessage.appendChild(newTime);
 
         //append whole message child to body
         document.body.appendChild(newMessage);
@@ -80,5 +125,4 @@
 
 </script>
 </body>
-
 </html>
