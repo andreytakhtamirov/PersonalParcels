@@ -2,12 +2,43 @@
 <html lang="en">
 
 <head>
-    <meta http-equiv="content-type" content="text/html;charset=utf-8" />
+    <meta http-equiv="content-type" content="text/html;charset=utf-8"/>
     <title>Messages</title>
 </head>
 
-<body style="margin-left: 5%; margin-right: 5%; border-style: solid; display: compact; border-color: rgba(95,95,95, 0.2)">
+<body>
+<nav class="navbar navbar-light bg-light">
+    <div class="input-group">
+        <a class="navbar-brand" href="/"
+           style="margin-left: 4%;
+           color: rgba(248,248,248,1);
+           font-family: 'Euphemia UCAS',serif;
+           background-color: rgba(123,142,255, 0.9);
+           padding: 5px 10px 5px 10px;
+           border-radius: 6px;">💌 Upload
+        </a>
+        <input class="form-control"
+               placeholder="Search Messages"
+               style="margin-left: auto;
+               min-width: 20%;
+               max-width: 30%;
+               margin-right: 4%;
+               border-radius: 6px;"
+               type="text">
+    </div>
+</nav>
+<div id="displayedMessages"
+     style="margin-left: 5%;
+     margin-right: 5%;
+     border-style: solid;
+     border-radius: 10px;
+     display: compact;
+     border-color: rgba(95,95,95, 0.2)">
+</div>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <script type="text/javascript">
+    // load data which was read in flask from a json file
     messages = {{ data | safe }}
 
     displayMessages(messages);
@@ -16,31 +47,33 @@
         let msg_string = "";
         let sender_string = "";
         let time_string = "";
-        let isMe = "";
+        let isMe = "";  // bool to show if a message is from the user or not (for displaying on opposite side)
 
+        // read the lines from data and construct messages/images
         for (let item in data) {
-            if (Object.hasOwnProperty.call(data, item)) {
+            if ( Object.hasOwnProperty.call(data, item) ) {
                 let element = data[item];
 
-                if (element.includes("content: ")) {
+                if ( element.includes("content: ") ) {
                     msg_string = element.substring("content: ".length);
                     msg_string = msg_string.replaceAll('â', '\'');
-                } else if (element.includes("sender: ")) {
+                } else if ( element.includes("sender: ") ) {
                     sender_string = element.substring("sender: ".length);
-                    if (sender_string == "andrey.takhtamirov") {
+
+                    //need to make this not dependent on myself
+                    if ( sender_string === "andrey.takhtamirov" ) {
                         isMe = true;
-                    }
-                    else {
+                    } else {
                         isMe = false;
                     }
-                } else if (element.includes("time: ")) {
+                } else if ( element.includes("time: ") ) {
                     time_string = element.substring("time: ".length);
-                } else if (element.includes("url: ")) {
+                } else if ( element.includes("url: ") ) {
                     createImage(processUrl(element));
                 }
             }
 
-            if (msg_string.length !== 0 && sender_string.length !== 0 && time_string.length !== 0) {
+            if ( msg_string.length !== 0 && sender_string.length !== 0 && time_string.length !== 0 ) {
                 createMessage(msg_string, sender_string, time_string, isMe);
                 msg_string = "";
                 sender_string = "";
@@ -57,7 +90,15 @@
         let img = document.createElement('img');
         img.src = imgPath;
         img.style.width = "300px";
-        img.onclick = function(){zoomImage(this)};
+        // img.onclick = function () {
+        //     zoomImage(this)
+        // };
+        img.onmouseover = function () {
+            this.style.width = "auto";
+        }
+        img.onmouseout = function () {
+            this.style.width = "300px";
+        }
         img.style.paddingLeft = "5px";
         img.style.paddingBottom = "5px";
         img.style.display = "block";
@@ -105,7 +146,7 @@
         newMessage.style.maxWidth = "50%";
         newMessage.style.fontFamily = "arial";
 
-        if (isMe == true) {
+        if ( isMe === true ) {
             newContent.style.backgroundColor = "rgba(140,95,245,0.2)";
             newTime.style.backgroundColor = "rgba(140,95,245,0.2)";
             newSender.style.display = "none";
@@ -124,12 +165,12 @@
         newMessage.appendChild(newTime);
 
         //append whole message child to body
-        document.body.appendChild(newMessage);
+        document.getElementById("displayedMessages").appendChild(newMessage);
     }
 
     function zoomImage(img) {
-        if ( img.style.width == "300px" ) {
-            img.style.width = "99%"
+        if ( img.style.width === "300px" ) {
+            img.style.width = "auto";
         } else {
             img.style.width = "300px"
         }
