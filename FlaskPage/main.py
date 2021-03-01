@@ -1,23 +1,27 @@
 import datetime
 import json
 import os
-from unidecode import unidecode
 
 from flask import Flask, render_template, request, redirect
 from werkzeug.utils import secure_filename
 
 app = Flask(__name__, static_url_path="/photos", static_folder="photos")
 
+
+# home, route to upload page
 @app.route('/')
 def home():
     return redirect("/upload")
 
+
+# page where the user is prompted to upload a file
 @app.route('/upload')
 def upload_file():
     return render_template("upload.html")
 
 
-@app.route('/uploader', methods=['GET', 'POST'])
+# message display page
+@app.route('/messages', methods=['GET', 'POST'])
 def uploader():
     if request.method == 'POST':
         f = request.files['file']
@@ -25,6 +29,7 @@ def uploader():
         return render_template("messages.html", data=read_file(f.filename))
 
 
+# read a given file and add needed json elements into a list
 def read_file(filename):
     messages_list = [""]
 
@@ -43,7 +48,9 @@ def read_file(filename):
             elif 'photos' in p:
                 for p in p['photos']:
                     messages_list.insert(0, 'url: ' + p['uri'])
-                    # print('creation timestamp: ' + convert_time(p['creation_timestamp']))\
+
+                    # image timestamp (different format than time)
+                    # print('creation timestamp: ' + convert_time(p['creation_timestamp']))
 
     # delete file from server (the user's data should not be accessible for reading after processing)
     os.remove(filename)
@@ -51,6 +58,7 @@ def read_file(filename):
     return messages_list
 
 
+# convert time to a readable format
 def convert_time(ms_since_1970):
     return datetime.datetime.fromtimestamp(ms_since_1970 / 1000).strftime('%Y-%m-%d %H:%M')
 

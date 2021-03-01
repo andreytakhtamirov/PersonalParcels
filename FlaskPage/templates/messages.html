@@ -6,18 +6,19 @@
     <title>Messages</title>
 </head>
 
-<body>
-<nav class="navbar navbar-light bg-light">
+<body style="padding-bottom: 40px;">
+<nav class="navbar fixed-top navbar-light bg-light">
     <div class="input-group">
         <a class="navbar-brand" href="/"
            style="margin-left: 4%;
            color: rgba(248,248,248,1);
            font-family: 'Euphemia UCAS',serif;
-           background-color: rgba(123,142,255, 0.9);
+           background-color: rgba(123,142,255,0.9);
            padding: 5px 10px 5px 10px;
            border-radius: 6px;">💌 Upload
         </a>
         <input class="form-control"
+               id="search"
                placeholder="Search Messages"
                style="margin-left: auto;
                min-width: 20%;
@@ -27,6 +28,7 @@
                type="text">
     </div>
 </nav>
+<div style="padding-top: 70px;"></div>
 <div id="displayedMessages"
      style="margin-left: 5%;
      margin-right: 5%;
@@ -35,7 +37,16 @@
      display: compact;
      border-color: rgba(95,95,95, 0.2)">
 </div>
+
+<button id="goToTop" class="btn btn-outline-info" style="position: fixed; top: 60px; right: 45%; display: none;">
+    ᐱ
+</button>
+<button id="goToBottom" class="btn btn-outline-info" style="position: fixed; bottom: 20px; right: 45%; display: block;">
+    ᐯ
+</button>
+
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <script type="text/javascript">
     // load data which was read in flask from a json file
@@ -43,6 +54,52 @@
 
     displayMessages(messages);
 
+    $(document).ready(function () {
+        // show scroll to top/bottom arrows when user has scrolled up/down
+        $(window).scroll(function () {
+            if ( $(this).scrollTop() > 70 ) {
+                $("#goToTop").fadeIn();
+            } else {
+                $("#goToTop").fadeOut();
+            }
+            if ( $(this).scrollTop() < $(document).height() - 1200 ) {
+                $("#goToBottom").fadeIn();
+            } else {
+                $("#goToBottom").fadeOut();
+            }
+        });
+
+        // click button to go to the top of the document
+        $("#goToTop").click(function () {
+            $("body,html").animate({
+                scrollTop: 0
+            }, 1000);
+            return false;
+        });
+
+        // click button to go to the bottom of the document
+        $("#goToBottom").click(function () {
+            $("body,html").animate({
+                scrollTop: $(document).height()
+            }, 1000);
+            return false;
+        });
+    });
+
+    // search the document for a value typed into the "search messages" field
+    document.getElementById("search").onchange = function () {
+        let str = document.getElementById("search").value;
+        let strFound;
+
+        if ( window.find ) {
+            strFound = self.find(str);
+            if ( strFound && self.getSelection && !self.getSelection().anchorNode ) {
+                strFound = self.find(str)
+            }
+        }
+    };
+
+    // Displays message content and details from a given list of messages
     function displayMessages(data) {
         let msg_string = "";
         let sender_string = "";
@@ -56,11 +113,12 @@
 
                 if ( element.includes("content: ") ) {
                     msg_string = element.substring("content: ".length);
-                    msg_string = msg_string.replaceAll('â', '\'');
+                    msg_string = msg_string.replaceAll("â", "\'");  // show ' character
                 } else if ( element.includes("sender: ") ) {
                     sender_string = element.substring("sender: ".length);
 
-                    //need to make this not dependent on myself
+                    // note: need to make this not dependent on myself
+                    // maybe display a modal to select which user you are upon initial page load
                     if ( sender_string === "andrey.takhtamirov" ) {
                         isMe = true;
                     } else {
@@ -73,6 +131,7 @@
                 }
             }
 
+            // only create message when all elements are filled
             if ( msg_string.length !== 0 && sender_string.length !== 0 && time_string.length !== 0 ) {
                 createMessage(msg_string, sender_string, time_string, isMe);
                 msg_string = "";
@@ -82,62 +141,71 @@
         }
     }
 
+    // function to isolate image path
     function processUrl(urlElement) {
+        // magic number "35" is dependent on the directory and group chat/conversation name
+        // needs to be changed to only include the path "/photos/..."
         return urlElement.substring("url: ".length + 35, urlElement.length);
     }
 
+    // inserts image from a given image path
     function createImage(imgPath) {
-        let img = document.createElement('img');
+        let img = document.createElement("img");
         img.src = imgPath;
         img.style.width = "300px";
-        // img.onclick = function () {
-        //     zoomImage(this)
-        // };
-        img.onmouseover = function () {
-            this.style.width = "auto";
-        }
-        img.onmouseout = function () {
-            this.style.width = "300px";
+
+        // click to expand/shrink image
+        img.onclick = function () {
+            if ( img.style.width === "300px" ) {
+                img.style.width = "99.4%";
+            } else {
+                img.style.width = "300px"
+            }
         }
         img.style.paddingLeft = "5px";
         img.style.paddingBottom = "5px";
         img.style.display = "block";
-        document.body.appendChild(img);
+        document.getElementById("displayedMessages").appendChild(img);
     }
 
+    // create and insert message from content, sender, time
     function createMessage(message, sender, time, isMe) {
-        //this will be the container for the whole message: (message, sender, time)
+        // this will be the container for the whole message: (message, sender, time)
         let newMessage = document.createElement("div");
 
-        //create sender child
+        // create sender parent with sender name as child element
         let newSender = document.createElement("div");
         newSender.appendChild(document.createTextNode(sender));
 
-        //create content child
+        // create content parent
         let newContent = document.createElement("div");
         newContent.style.backgroundColor = "rgba(83,201,236, 0.2)";
-        newContent.style.borderRadius = "10px 10px 0px 0px";
+        newContent.style.borderRadius = "20px 10px 0px 0px";
         newContent.style.color = "rgb(86,86,86)";
         newContent.style.paddingTop = "5px";
         newContent.style.paddingLeft = "10px";
         newContent.style.paddingRight = "10px";
 
+        // append content child to content parent
         newContent.appendChild(document.createTextNode(message));
 
-        //create time child
+        // create time parent
         let newTime = document.createElement("div");
         newTime.style.color = "rgb(100,100,100)";
         newTime.style.fontSize = "15px";
         newTime.style.textAlign = "right";
         newTime.style.backgroundColor = "rgba(83,201,236, 0.2)";
-        newTime.style.borderRadius = "0px 0px 10px 1px";
+        newTime.style.borderRadius = "0px 0px 20px 1px";
         newTime.style.paddingTop = "5px";
         newTime.style.paddingRight = "10px";
         newTime.style.paddingLeft = "10px";
         newTime.style.paddingBottom = "5px";
+
+        // append time child to parent
         newTime.appendChild(document.createTextNode(time));
 
-        //set padding between whole messages
+        // complete message characteristics
+        // set padding between whole messages
         newMessage.style.paddingBottom = "4.5%";
         newMessage.style.paddingLeft = "1%";
         newMessage.style.paddingTop = "1%";
@@ -146,17 +214,20 @@
         newMessage.style.maxWidth = "50%";
         newMessage.style.fontFamily = "arial";
 
-        if ( isMe === true ) {
+        // if user is sender, change layout and colours
+        if ( isMe ) {
             newContent.style.backgroundColor = "rgba(140,95,245,0.2)";
-            newTime.style.backgroundColor = "rgba(140,95,245,0.2)";
+            newContent.style.borderRadius = "10px 20px 0px 0px";
+            newContent.style.textAlign = "right";
             newSender.style.display = "none";
+
             newMessage.style.marginLeft = "auto";
             newMessage.style.paddingRight = "1%";
             newMessage.style.maxWidth = "400px";
 
+            newTime.style.backgroundColor = "rgba(140,95,245,0.2)";
             newTime.style.textAlign = "left";
-            newContent.style.textAlign = "right";
-            newTime.style.borderRadius = "0px 0px 1px 10px";
+            newTime.style.borderRadius = "0px 0px 1px 20px";
         }
 
         //append the elements of a message together: sender, content, time
@@ -164,18 +235,9 @@
         newMessage.appendChild(newContent);
         newMessage.appendChild(newTime);
 
-        //append whole message child to body
+        //append whole message to body
         document.getElementById("displayedMessages").appendChild(newMessage);
     }
-
-    function zoomImage(img) {
-        if ( img.style.width === "300px" ) {
-            img.style.width = "auto";
-        } else {
-            img.style.width = "300px"
-        }
-    }
-
 </script>
 </body>
 </html>

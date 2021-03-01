@@ -1,25 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta http-equiv="content-type" content="text/html;charset=utf-8" />
+    <meta http-equiv="content-type" content="text/html;charset=utf-8"/>
 </head>
 <body>
-<div class="container mt-3" style="padding-left: 20%; padding-right: 20%;">
-    <h2>File Upload</h2>
-    <form action="http://127.0.0.1:5000/uploader" method="POST"
+<form action="http://127.0.0.1:5000/messages" method="POST"
       enctype="multipart/form-data">
-        <p>Custom file:</p>
+    <div class="container mt-3" style="padding-left: 10%; padding-right: 10%;">
+        <h2 style="color: rgba(67,69,69,0.90);">File Upload</h2>
+
+        <p style="color: dimgrey">Choose an Instagram-generated message JSON file</p>
         <div class="custom-file">
             <input type="file" accept=".json" class="custom-file-input" id="customFile" name="file">
             <label class="custom-file-label" for="customFile">Choose file</label>
         </div>
-        
+
         <div class="mt-3">
-            <button type="submit" class="btn btn-primary">Submit</button>
+            <button id="submit" type="submit" class="btn btn-primary" disabled>Submit</button>
         </div>
-    </form>
-</div>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+    </div>
+</form>
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
@@ -27,8 +27,9 @@
 <script>
     // Add the following code if you want the name of the file appear on select
     $(".custom-file-input").on("change", function () {
-        var fileName = $(this).val().split("\\").pop();
+        let fileName = $(this).val().split("\\").pop();
         $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+        document.getElementById("submit").disabled = false;
     });
 </script>
 </body>
